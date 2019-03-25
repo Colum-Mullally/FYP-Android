@@ -48,12 +48,14 @@ public class RegisterRESTTask extends AsyncTask<String,Void,ResponseEntity>
         }
     }
     protected void  onPostExecute(ResponseEntity result){
-        HttpStatus status = result.getStatusCode();
-        if (status == HttpStatus.OK) {
-            String auth= username+":"+password;
-            authHeader="Basic " + Base64.encodeToString(auth.getBytes(),Base64.NO_WRAP);
-            authenticationService.validUser(authHeader);
-            new UploadRESTTASK(c).execute(username,password);
+        if (result!=null) {
+            HttpStatus status = result.getStatusCode();
+            if (status == HttpStatus.OK) {
+                String auth = username + ":" + password;
+                authHeader = "Basic " + Base64.encodeToString(auth.getBytes(), Base64.NO_WRAP);
+                authenticationService.validUser(authHeader);
+                new UploadRESTTASK(c).execute(username, password);
+            }
         }
     }
 }

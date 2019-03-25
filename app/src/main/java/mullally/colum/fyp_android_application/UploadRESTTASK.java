@@ -1,6 +1,7 @@
 package mullally.colum.fyp_android_application;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -61,7 +62,9 @@ public class UploadRESTTASK extends AsyncTask<String,Void,Boolean> {
                 @Override
                 public void onResponse(Call<ResponseBody> call,
                                        Response<ResponseBody> response) {
-                    new LoginRESTTask(c).execute(username,password);
+                    Intent intent = new Intent(c,InitialDetails.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    c.startActivity(intent);
                     Log.v("Upload", "success");
                 }
 

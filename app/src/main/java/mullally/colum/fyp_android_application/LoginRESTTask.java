@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Base64;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -46,12 +49,34 @@ public class LoginRESTTask extends AsyncTask<String,Void,ResponseEntity>
     }
     protected void  onPostExecute(ResponseEntity result){
         super.onPostExecute(result);
-        HttpStatus status = result.getStatusCode();
-        if(status== HttpStatus.OK){
-            authenticationService.validUser(authHeader);
-            Intent intent = new Intent(con,UserDetailsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            con.startActivity(intent);
+        if (result !=null) {
+            HttpStatus status = result.getStatusCode();
+            JSONObject json;
+            JSONArray pdf;
+            JSONArray attributes;
+            String name;
+            String content;
+            int count= 0;
+            try {
+                json = new JSONObject(result.getBody().toString());
+                pdf = new JSONArray(json.get("pdf").toString());
+                JSONObject y;
+                y = pdf.getJSONObject(0);
+                attributes =new JSONArray(y.get("attributes").toString());
+                for(int x =0; x<attributes.length();x++){
+                    if(attributes.getJSONObject(x).get("name").toString().matches("Voter.*Name")&&attributes.getJSONObject(x).get("content").toString()!="null")
+                    count++;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (status == HttpStatus.OK) {
+                authenticationService.validUser(authHeader);
+                Intent intent = new Intent(con, UserDetailsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("votes", count);
+                con.startActivity(intent);
+            }
         }
     }
 }
