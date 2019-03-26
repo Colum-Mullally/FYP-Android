@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -45,75 +46,81 @@ public class InitialDetails extends AppCompatActivity {
                 Retrofit.Builder builder =new Retrofit.Builder()
                         .baseUrl("https://colum-mullally-fyp-webservice.herokuapp.com/").addConverterFactory(GsonConverterFactory.create());
                 Retrofit retrofit = builder.build();
-                UserAPI api =retrofit.create(UserAPI.class);
+                final UserAPI api =retrofit.create(UserAPI.class);
                 Call<ResponseBody> call= api.setField(authenticationService.getValidUser(),"Course Code",courseCodeInput.getText().toString());
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call,
                                            Response<ResponseBody> response) {
                         Log.v("Upload", "success");
+                        call= api.setField(authenticationService.getValidUser(),"Year of study",yearOfCourseInput.getText().toString());
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call,
+                                                   Response<ResponseBody> response) {
+                                Log.v("Upload", "success");
+                                call= api.setField(authenticationService.getValidUser(),"Fullname",fullNameInput.getText().toString());
+                                call.enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call,
+                                                           Response<ResponseBody> response) {
+                                        call= api.setField(authenticationService.getValidUser(),"Course of study",courseOfStudyInput.getText().toString());
+                                        call.enqueue(new Callback<ResponseBody>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call,
+                                                                   Response<ResponseBody> response) {
+                                                call= api.setField(authenticationService.getValidUser(),"Student ID",studentIDInput.getText().toString());
+                                                call.enqueue(new Callback<ResponseBody>() {
+                                                    @Override
+                                                    public void onResponse(Call<ResponseBody> call,
+                                                                           Response<ResponseBody> response) {
+                                                        Log.v("Upload", "success");
+                                                        Intent intent = new Intent(InitialDetails.this,UserDetailsActivity.class);
+                                                        intent.putExtra("votes", 0);
+                                                        startActivity(intent);
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                        Log.e("Upload error:", t.getMessage());
+                                                        Toast.makeText(InitialDetails.this, "Error try again", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                                Log.v("Upload", "success");
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                Log.e("Upload error:", t.getMessage());
+                                                Toast.makeText(InitialDetails.this, "Error try again", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        Log.v("Upload", "success");
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                        Log.e("Upload error:", t.getMessage());
+                                        Toast.makeText(InitialDetails.this, "Error try again", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("Upload error:", t.getMessage());
+                                Toast.makeText(InitialDetails.this, "Error try again", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.e("Upload error:", t.getMessage());
+                        Toast.makeText(InitialDetails.this, "Error try again", Toast.LENGTH_SHORT).show();
                     }
                 });
-                call= api.setField(authenticationService.getValidUser(),"Year of study",yearOfCourseInput.getText().toString());
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call,
-                                           Response<ResponseBody> response) {
-                        Log.v("Upload", "success");
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Upload error:", t.getMessage());
-                    }
-                });
-                call= api.setField(authenticationService.getValidUser(),"Fullname",fullNameInput.getText().toString());
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call,
-                                           Response<ResponseBody> response) {
-                        Log.v("Upload", "success");
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Upload error:", t.getMessage());
-                    }
-                });
-                call= api.setField(authenticationService.getValidUser(),"Course of study",courseOfStudyInput.getText().toString());
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call,
-                                           Response<ResponseBody> response) {
-                        Log.v("Upload", "success");
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Upload error:", t.getMessage());
-                    }
-                });
-                call= api.setField(authenticationService.getValidUser(),"Student ID",studentIDInput.getText().toString());
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call,
-                                           Response<ResponseBody> response) {
-                        Log.v("Upload", "success");
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Upload error:", t.getMessage());
-                    }
-                });
-                Intent intent = new Intent(InitialDetails.this,UserDetailsActivity.class);
-                intent.putExtra("votes", 0);
-                startActivity(intent);
             }
         });
     }

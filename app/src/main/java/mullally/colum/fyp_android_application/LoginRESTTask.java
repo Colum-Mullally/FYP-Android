@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,5 +79,6 @@ public class LoginRESTTask extends AsyncTask<String,Void,ResponseEntity>
                 con.startActivity(intent);
             }
         }
+        Toast.makeText(con, "Error try again", Toast.LENGTH_SHORT).show();
     }
 }

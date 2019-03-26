@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +57,7 @@ public class RegisterRESTTask extends AsyncTask<String,Void,ResponseEntity>
                 authenticationService.validUser(authHeader);
                 new UploadRESTTASK(c).execute(username, password);
             }
+            Toast.makeText(c, "Error try again", Toast.LENGTH_SHORT).show();
         }
     }
 }
